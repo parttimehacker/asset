@@ -40,7 +40,6 @@ class ConfigModel:
         PARSER = argparse.ArgumentParser('Command Line Parser')
         PARSER.add_argument('--mqtt', help='MQTT server IP address')
         PARSER.add_argument('--location', help='Location topic required')
-        PARSER.add_argument('--mode', help='Mode: motion or message required')
         ARGS = PARSER.parse_args()
         # command line arguement for the MQTT broker hostname or IP
         if ARGS.mqtt == None:
@@ -52,12 +51,6 @@ class ConfigModel:
             self.logger.error("Terminating> --location not provided")
             exit() # mandatory
         self.location = ARGS.location
-        # command line argument for the mode - manual or motion - motion is the default
-        if ARGS.mode == None:
-            self.mode = 'motion'
-        else:
-            self.mode = ARGS.mode
-        self.logger.info( "Mode> " + str( self.mode ) )
 
     def get_broker(self, ):
         """ MQTT BORKER hostname or IP address."""
@@ -67,6 +60,3 @@ class ConfigModel:
         """ MQTT location topic for the device. """
         return self.location
 
-    def get_mode(self,):
-        """ Mode of switch operation - motion activated or manual via MQTT message """
-        return self.mode

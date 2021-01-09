@@ -29,7 +29,7 @@ class TestModel:
     """ Manage all diy/system/test topic messages
     """
 
-    def __init__(self, controller, logging_file):
+    def __init__(self, logging_file):
         """ Create two topics for this application. """
         logging.config.fileConfig( fname=logging_file, disable_existing_loggers=False )
         # Get the logger specified in the file
@@ -55,11 +55,9 @@ class TestModel:
         self.logger.info("Tilt: not a valid msg")
 
     def on(self):
-        self.controller.turn_on_switch()
         self.logger.info("case 5: ON switch on")
 
     def off(self):
-        self.controller.turn_off_switch()
         self.logger.info("case 6: OFF switch off")
 
     def on_message(self, msg):
