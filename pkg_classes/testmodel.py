@@ -35,7 +35,6 @@ class TestModel:
         # Get the logger specified in the file
         self.logger = logging.getLogger(__name__)
         self.logger.info("Switch Test Model started")
-        self.controller = controller
         self.options = {
             b'0' : self.off,
             b'1': self.no_op,
