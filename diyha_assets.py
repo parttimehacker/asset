@@ -1,6 +1,6 @@
 #!/usr/bin/python3
-""" DIYHA switch
-    Receives MQTT messages from MQTT broker or motion sensor to turn on/off switch.
+""" DIYHA assets
+    Send server information to MQTT broker
 """
 
 # The MIT License (MIT)
@@ -29,18 +29,11 @@ import logging.config
 import time
 import paho.mqtt.client as mqtt
 
-from pkg_classes.motioncontroller import MotionController
-from pkg_classes.switchcontroller import SwitchController
 from pkg_classes.testmodel import TestModel
 from pkg_classes.topicmodel import TopicModel
 from pkg_classes.whocontroller import WhoController
 from pkg_classes.configmodel import ConfigModel
 from pkg_classes.statusmodel import StatusModel
-
-# Constants for GPIO pins
-
-SWITCH_GPIO = 17
-MOTION_GPIO = 27
 
 # Start logging and enable imported classes to log appropriately.
 
@@ -64,17 +57,9 @@ TOPIC.set(CONFIG.get_location())
 
 WHO = WhoController(LOGGING_FILE)
 
-# set up switch GPIO controller to power on/off and with interval timer
-
-SWITCH = SwitchController(SWITCH_GPIO)  # Alarm or light controller
-
-# set up the motion controller using a PIR sensor
-
-MOTION = MotionController(MOTION_GPIO)
-
 # process diy/system/test development messages
 
-TEST = TestModel(SWITCH, LOGGING_FILE)
+TEST = TestModel(LOGGING_FILE)
 
 # Process MQTT messages using a dispatch table algorithm.
 
@@ -82,17 +67,7 @@ def system_message(client, msg):
     """ Log and process system messages. """
     # pylint: disable=unused-argument
     LOGGER.info(msg.topic + " " + msg.payload.decode('utf-8'))
-    if msg.topic == 'diy/system/fire':
-        if msg.payload == b'ON':
-            SWITCH.turn_on_switch()
-        else:
-            SWITCH.turn_off_switch()
-    elif msg.topic == 'diy/system/panic':
-        if msg.payload == b'ON':
-            SWITCH.turn_on_switch()
-        else:
-            SWITCH.turn_off_switch()
-    elif msg.topic == 'diy/system/test':
+    if msg.topic == 'diy/system/test':
         TEST.on_message(msg.payload)
     elif msg.topic == 'diy/system/who':
         if msg.payload == b'ON':
@@ -104,10 +79,6 @@ def system_message(client, msg):
 #  A dictionary dispatch table is used to parse and execute MQTT messages.
 
 TOPIC_DISPATCH_DICTIONARY = {
-    "diy/system/fire":
-        {"method": system_message},
-    "diy/system/panic":
-        {"method": system_message},
     "diy/system/test":
         {"method": system_message},
     "diy/system/who":
@@ -118,13 +89,7 @@ TOPIC_DISPATCH_DICTIONARY = {
 def on_message(client, userdata, msg):
     """ dispatch to the appropriate MQTT topic handler """
     # pylint: disable=unused-argument
-    if msg.topic == TOPIC.get_switch():
-        if msg.payload == b'ON':
-            SWITCH.turn_on_switch()
-        else:
-            SWITCH.turn_off_switch()
-    else:
-        TOPIC_DISPATCH_DICTIONARY[msg.topic]["method"](client, msg)
+    TOPIC_DISPATCH_DICTIONARY[msg.topic]["method"](client, msg)
 
 
 def on_connect(client, userdata, flags, rc_msg):
@@ -132,8 +97,6 @@ def on_connect(client, userdata, flags, rc_msg):
         reconnect then subscriptions will be renewed.
     """
     # pylint: disable=unused-argument
-    client.subscribe("diy/system/fire", 1)
-    client.subscribe("diy/system/panic", 1)
     client.subscribe("diy/system/test", 1)
     client.subscribe("diy/system/who", 1)
 
@@ -158,10 +121,6 @@ if __name__ == '__main__':
 
     WHO.set_client(CLIENT)
 
-    # command line argument contains Mosquitto MQTT broker IP address.
-
-    SWITCH.set_mqtt_topic(CLIENT, TOPIC.get_switch())
-
     # command line argument for the switch mode - motion activated is the default
 
     CLIENT.connect(CONFIG.get_broker(), 1883, 60)
@@ -174,20 +133,7 @@ if __name__ == '__main__':
     STATUS = StatusModel(CLIENT)
     STATUS.start()
 
-    # start the switch automatic management
-
-    SWITCH.start()
-
     # Loop forever waiting for motion
 
     while True:
         time.sleep(2.0)
-        if MOTION.detected():
-            movement = MOTION.get_motion()
-            CLIENT.publish(TOPIC.get_motion(), movement, 0, True)
-            if movement == "1":
-                if CONFIG.mode() == "motion":
-                    SWITCH.turn_on_switch()
-                else:
-                    if SWITCH.state == "ON":
-                        SWITCH.turn_on_switch()
