@@ -38,7 +38,6 @@ from pkg_classes.statusmodel import StatusModel
 # Start logging and enable imported classes to log appropriately.
 
 LOGGING_FILE = '/usr/local/diyha_assets/logging.ini'
-print(LOGGING_FILE)
 logging.config.fileConfig( fname=LOGGING_FILE, disable_existing_loggers=False )
 LOGGER = logging.getLogger(__name__)
 LOGGER.info('Application started')
