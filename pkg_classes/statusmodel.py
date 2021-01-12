@@ -129,6 +129,9 @@ class StatusModel:
             self.collect_data()
             if self.iterations >= 15.0:
                 self.publish_averages()
+                self.publish_os_version()
+                self.publish_pi_version()
+                self.publish_ip_address()
 
     def stop(self, ):
         """ Turn power off to the GPIO pin. """
