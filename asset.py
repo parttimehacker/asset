@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" DIYHA assets
+""" DIYHA asset
     Send server information to MQTT broker
 """
 
