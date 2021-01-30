@@ -5,7 +5,7 @@
 
 # The MIT License (MIT)
 #
-# Copyright (c) 2019 parttimehacker@gmail.com
+# Copyright (c) 2021 parttimehacker@gmail.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ from pkg_classes.statusmodel import StatusModel
 
 # Start logging and enable imported classes to log appropriately.
 
-LOGGING_FILE = '/usr/local/diyha_assets/logging.ini'
+LOGGING_FILE = '/usr/local/asset/logging.ini'
 logging.config.fileConfig( fname=LOGGING_FILE, disable_existing_loggers=False )
 LOGGER = logging.getLogger(__name__)
 LOGGER.info('Application started')
