@@ -8,7 +8,7 @@ Installation is a two step process. First clone the repository, and then install
 
 - Step 1 - clone this repository
 ```
-git clone https://github.com/parttimehacker/admin.git
+git clone https://github.com/parttimehacker/asset.git
 ```
 - Step 2 - Install required software - MQTT and RPI.GPIO libraries
 ```
