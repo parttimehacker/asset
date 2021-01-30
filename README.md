@@ -12,7 +12,7 @@ git clone https://github.com/parttimehacker/asset.git
 ```
 - Step 2 - Install required software - MQTT and RPI.GPIO libraries
 ```
-cd admin
+cd asset
 pip install -r requirements.txt
 ```
 ## Usage: 
