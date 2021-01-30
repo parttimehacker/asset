@@ -20,10 +20,10 @@ You need to decide whether you want to manually run the application or have it s
 ### Manual or Command Prompt
 To manually run the application enter the following command (sudo may be required on your system)
 ```
-sudo python3 admin.py --mq <MQTT_BROKER> --ws <WEB_SERVER>
+sudo python3 admin.py --mq <MQTT_BROKER> --location <LOCATION>
 ```
 - <MQTT_BROKER> I use the Open Source Mosquitto broker and bridge
-- <WEB_SERVER> is the **Django* web server 
+- <LOCATIONR> is the room where the server is located 
 - Host names or IP address can be used.
 ### Raspbian systemd Service
 First edit the **admin systemd service** and replace the MQTT broker and web server values with their host names or IP addresse. A systemd install script will move files and enable the applicaiton via **systemctl** commands.
