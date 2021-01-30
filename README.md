@@ -45,11 +45,21 @@ cd
 source .bashrc
 ```
 ### MQTT Topics and Messages
-The application subscribes to multiple MQTT topics and publishes initialization messages. Three are handled locally and the rest are sent to the web server's API for processing.
-- Two topics **diy/system/fire** and **diy/system/panic** are special cases and also email alerts
-- The **diy/system/who** sends local server information to the web server's API. 
-- The reset of the MQTT messages are translated to HTTP messages to the web server's API for processing.
-- System message are initialized at startup and legacy messages are sent to a older running applications.
+The application subscribes to two MQTT topics and publishes six status messages. Three are are sent at initialization and then handled by a **diy/system/who** message. Three other messages are sent every 15 minutes after calculating an average. The first three are:
+```
+self.host = socket.gethostname()
+self.os_version_topic = "diy/" + self.host + "/os"
+self.pi_version_topic = "diy/" + self.host + "/pi"
+self.ip_address_topic = "diy/" + self.host + "/ip"
+```
+The timed messages are:
+```
+self.host = socket.gethostname()
+self.cpu_topic = "diy/" + self.host + "/cpu"
+self.celsius_topic = "diy/" + self.host + "/cpucelsius"
+self.disk_topic = "diy/" + self.host + "/disk"
+```
+- The **diy/system/who** sends local server information to the MQTT Broker. 
 ## Contributing: 
 - Adafruit supplies most of my hardware. http://www.adafruit.com
 - My "do it yourself home automation" system leverages the work from the Eclipse IOT Paho project. https://www.eclipse.org/paho/
